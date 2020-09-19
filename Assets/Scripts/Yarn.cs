@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Yarn : MonoBehaviour
 {
+    public MyController controller;
+    private bool active = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,7 +22,11 @@ public class Yarn : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         Debug.Log(collision.gameObject.name);
-        if (collision.gameObject.tag == "MouseTarget")
+        if (active && collision.gameObject.tag == "MouseTarget")
+        {
             Debug.Log("hit target");
+            active = false;
+            controller.score += 1;
+        }
     }
 }

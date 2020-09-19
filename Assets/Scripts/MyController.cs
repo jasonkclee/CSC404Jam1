@@ -15,7 +15,7 @@ using UnityEngine;
  * 
  * 
  * */
-
+using UnityEngine.UI;
 
 public class MyController : MonoBehaviour
 {
@@ -28,20 +28,33 @@ public class MyController : MonoBehaviour
 
     public float throwSpeed = 40;
 
+    public Texture2D cursorTexture;
+    public CursorMode cursorMode = CursorMode.Auto;
+    public Vector2 hotSpot = Vector2.zero;
+
+    public Text scoreText;
+    public int score = 0;
+    //public AudioSource throwSound;
+
     // This script will simply instantiate the Prefab when the game starts.
     void Start()
     {
+        //Cursor.SetCursor(cursorTexture, hotSpot, cursorMode);
         // Instantiate at position (0, 0, 0) and zero rotation.
-       // Instantiate(myPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+        // Instantiate(myPrefab, new Vector3(0, 0, 0), Quaternion.identity);
     }
 
     // Update is called once per frame
     void Update()
     {
+        scoreText.text = "Score: " + score.ToString();
         float val = Input.GetAxis("Fire1");
         if (Input.GetMouseButtonUp(0)) {
+            //throwSound.Play(0);
+
             // Create a new yarn ball
             yarn = Instantiate(yarn, yarnSpawn.transform.position, Quaternion.identity);
+            yarn.GetComponent<Yarn>().controller = this;
             Rigidbody rb = yarn.GetComponent<Rigidbody>();
 
             // Determine direction of throw
@@ -52,7 +65,9 @@ public class MyController : MonoBehaviour
             if (table.Raycast(ray, out hit, raycastDist))
             {
                 //Debug.Log("Intersection found");
-                Vector3 dir = (hit.point - yarnSpawn.transform.position);
+                Vector3 hitPoint = hit.point;
+                hitPoint.y += 1;
+                Vector3 dir = (hitPoint - yarnSpawn.transform.position);
                 dir.Normalize();
                 rb.velocity = dir * throwSpeed;
                 //transform.position = ray.GetPoint(100.0f);
